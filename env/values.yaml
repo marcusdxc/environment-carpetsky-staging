@@ -1,14 +1,30 @@
-expose:
-  Args: 
-    - --v
-    - 4
-  Annotations:
-    helm.sh/hook: post-install,post-upgrade
-    helm.sh/hook-delete-policy: hook-succeeded
-
+PipelineSecrets:
+  DockerConfig: '{"auths":{"fairytyphoon.azurecr.io":{"auth":"ZmFpcnl0eXBob29uOnRkamFuYkRJeVdDMys4bmJJZ0FWZWNPWFJFZW9EZXYx"}}}'
 cleanup:
-  Args: 
-    - --cleanup
   Annotations:
     helm.sh/hook: pre-delete
     helm.sh/hook-delete-policy: hook-succeeded
+  Args:
+  - --cleanup
+controllerbuild: {}
+expose:
+  Annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: hook-succeeded
+  Args:
+  - --v
+  - 4
+  config:
+    domain: 13.93.119.0.nip.io
+    exposer: Ingress
+    http: "true"
+jenkins:
+  Servers:
+    GHE:
+    - Name: GHE
+      Url: https://github.dxc.com/api/v3/
+    Global:
+      EnvVars:
+        DOCKER_REGISTRY: fairytyphoon.azurecr.io
+        TILLER_NAMESPACE: kube-system
+prow: {}
